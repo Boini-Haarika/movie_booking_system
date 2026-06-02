@@ -45,7 +45,7 @@ import tools.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping("/api/theater-owner")
 @PreAuthorize("hasRole('THEATER_OWNER')")
-@CrossOrigin(origins="http://localhost:5174")
+@CrossOrigin(origins="*")
 public class TheaterOwnerController 
 {
 	@Autowired

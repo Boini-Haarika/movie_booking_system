@@ -42,7 +42,7 @@ const HomePage = () => {
               {nowShowing.slice(0, 6).map((show) => (
   <div key={show.id} className="movie-card">
     <img 
-      src={show.movie?.posterUrl ? `http://localhost:8081${show.movie.posterUrl}` : '/api/placeholder/300/400'} 
+      src={show.movie?.posterUrl ? `https://moviebookingsystem-production.up.railway.app/${show.movie.posterUrl}` : '/api/placeholder/300/400'} 
       alt={show.movie?.title}
       onError={(e) => {
         e.target.onerror = null;

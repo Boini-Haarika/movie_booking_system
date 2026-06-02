@@ -47,7 +47,7 @@ import com.stripe.model.PaymentIntent;
 @RestController
 @RequestMapping("/api/user")
 @PreAuthorize("hasRole('USER')")
-@CrossOrigin(origins="http://localhost:5174")
+@CrossOrigin(origins="*")
 public class UserController
 {
   @Autowired

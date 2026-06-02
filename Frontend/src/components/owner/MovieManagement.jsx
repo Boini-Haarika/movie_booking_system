@@ -167,7 +167,7 @@ const MovieManagement = () => {
       theaterId: movie.theater?.id || selectedTheater
     });
     if (movie.posterUrl) {
-      setPosterPreview(`http://localhost:8081${movie.posterUrl}`);
+      setPosterPreview(`https://moviebookingsystem-production.up.railway.app${movie.posterUrl}`);
     }
     setShowModal(true);
   };
@@ -257,7 +257,7 @@ const MovieManagement = () => {
                   <div key={movie.id} className="movie-card">
                     <div className="movie-poster">
                       <img 
-                        src={movie.posterUrl ? `http://localhost:8081${movie.posterUrl}` : '/api/placeholder/300/400'} 
+                        src={movie.posterUrl ? `https://moviebookingsystem-production.up.railway.app${movie.posterUrl}` : '/api/placeholder/300/400'} 
                         alt={movie.title}
                         onError={(e) => {
                           e.target.src = '/api/placeholder/300/400';

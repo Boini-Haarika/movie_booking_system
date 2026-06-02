@@ -21,7 +21,7 @@ import com.moviesBooking.repository.TheaterRepository;
 
 @RestController
 @RequestMapping("/api/public")
-@CrossOrigin(origins="http://localhost:5174")
+@CrossOrigin(origins="*")
 public class PublicController
 {
 	@Autowired
