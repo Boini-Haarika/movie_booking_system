@@ -32,7 +32,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins="http://localhost:5174")
+@CrossOrigin(origins="*")
 public class AuthController 
 {
 	@Autowired
@@ -84,7 +84,7 @@ public class AuthController
 		user.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
 		userRepository.save(user);
 		//send Verification mail
-		String verificationLink="http://localhost:8081/api/auth/verify?token="+token;
+		String verificationLink="https://moviebookingsystem-production.up.railway.app/api/auth/verify?token="+token;
 		emailService.sendVerificationEmail(user.getEmail(),verificationLink);
 		return ResponseEntity.ok("User Registerd Successfully.Please Check Your Email For Verification Link");
 	}
