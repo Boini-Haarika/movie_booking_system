@@ -1,104 +1,101 @@
 package com.moviesBooking.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
+import org.springframework.web.client.RestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.moviesBooking.model.BookedSeat;
 import com.moviesBooking.model.Booking;
 import com.moviesBooking.model.Show;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
 public class EmailService 
 {
-  @Autowired
-  private JavaMailSender mailSender;
-  @Autowired
-  private TemplateEngine templateEngine;
-   private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
-    
-  @Async
-    public void sendVerificationEmail(String to, String verificationLink) {
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+
+    @Value("${brevo.api.key}")
+    private String brevoApiKey;
+
+    private void sendEmail(String to, String subject, String htmlContent) {
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            Context context = new Context();
-            context.setVariable("verificationLink", verificationLink);
-            String htmlContent = templateEngine.process("email/verification", context);
-            helper.setTo(to);
-            helper.setSubject("Verify your email-Movie Ticket Booked");
-            helper.setText(htmlContent, true);
-            mailSender.send(message);
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("api-key", brevoApiKey);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            String body = """
+                {
+                    "sender": {"name": "Movie Booking", "email": "boiniharika2109@gmail.com"},
+                    "to": [{"email": "%s"}],
+                    "subject": "%s",
+                    "htmlContent": "%s"
+                }
+                """.formatted(to, subject, htmlContent.replace("\"", "\\\"").replace("\n", "").replace("\r", ""));
+
+            HttpEntity<String> entity = new HttpEntity<>(body, headers);
+            restTemplate.postForObject(
+                "https://api.brevo.com/v3/smtp/email",
+                entity,
+                String.class
+            );
             logger.info("✅ Email sent successfully to: {}", to);
         } catch (Exception e) {
-            logger.error("❌ Email send failed: {}", e.getMessage()); // ← ఇది important
+            logger.error("❌ Email send failed: {}", e.getMessage());
         }
     }
-  public void sendBookingConfirmation(String to, Booking booking)
-  {
-      try {
-          MimeMessage message = mailSender.createMimeMessage();
-          MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-          Context context = new Context();
-          
-          Show show = booking.getShow();
-          show.getMovie().getTitle();
-          show.getTheater().getName();
-       
-          if (show.getScreen() != null) 
-          {
-              show.getScreen().getName();
-          }
-          
-          context.setVariable("booking", booking);
-          context.setVariable("movie", booking.getShow().getMovie());
-          context.setVariable("theater", booking.getShow().getTheater());
-          context.setVariable("show", show);
-          context.setVariable("showTime", booking.getShow().getStartTime());
-          context.setVariable("seats", booking.getBookedSeats().stream()
-              .map(BookedSeat::getSeat)
-              .collect(java.util.stream.Collectors.toList()));
-          
-          String htmlContent = templateEngine.process("email/booking-confirmation", context);
-          helper.setTo(to);
-          helper.setSubject("Booking Confirmation - " + booking.getBookingReference());
-          helper.setText(htmlContent, true);
-          mailSender.send(message);
-      }
-      catch(MessagingException e)
-      {
-          throw new RuntimeException("Failed to Send Email", e);  
-      }
-  }
-  
-  public void sendPsaawordResetEmail(String to,String resetLink)
-  {
-	  try {
-		  MimeMessage message=mailSender.createMimeMessage();
-		  MimeMessageHelper helper=new MimeMessageHelper(message,true,"UTF-8");
-		  Context context=new Context();
-		  context.setVariable("resetLink", resetLink);
-		  String htmlContent=templateEngine.process("email/password-reset", context);
-		  helper.setTo(to);
-		  helper.setSubject("Reset your Password");
-		  helper.setText(htmlContent,true);
-		  mailSender.send(message);
-	  }
-	  catch(MessagingException e)
-	  {
-		  throw new RuntimeException("Failed to Send Email",e);  
-	  }
-	  
-  }
- 
+
+    @Async
+    public void sendVerificationEmail(String to, String verificationLink) {
+        String subject = "Verify your email - Movie Booking";
+        String htmlContent = "<h2>Welcome to Movie Booking!</h2>" +
+            "<p>Please click the button below to verify your email address:</p>" +
+            "<a href='" + verificationLink + "' style='background-color:#e50914;color:white;" +
+            "padding:12px 24px;text-decoration:none;border-radius:4px;'>Verify Email</a>" +
+            "<p>This link expires in 24 hours.</p>";
+        sendEmail(to, subject, htmlContent);
+    }
+
+    @Async
+    public void sendBookingConfirmation(String to, Booking booking) {
+        try {
+            Show show = booking.getShow();
+            String movieTitle = show.getMovie().getTitle();
+            String theaterName = show.getTheater().getName();
+            String screenName = show.getScreen() != null ? show.getScreen().getName() : "N/A";
+            String seats = booking.getBookedSeats().stream()
+                .map(BookedSeat::getSeat)
+                .map(s -> s.getSeatNumber())
+                .collect(java.util.stream.Collectors.joining(", "));
+
+            String subject = "Booking Confirmation - " + booking.getBookingReference();
+            String htmlContent = "<h2>Booking Confirmed!</h2>" +
+                "<p><b>Movie:</b> " + movieTitle + "</p>" +
+                "<p><b>Theater:</b> " + theaterName + "</p>" +
+                "<p><b>Screen:</b> " + screenName + "</p>" +
+                "<p><b>Seats:</b> " + seats + "</p>" +
+                "<p><b>Booking Reference:</b> " + booking.getBookingReference() + "</p>";
+
+            sendEmail(to, subject, htmlContent);
+        } catch (Exception e) {
+            logger.error("❌ Booking confirmation email failed: {}", e.getMessage());
+        }
+    }
+
+    @Async
+    public void sendPsaawordResetEmail(String to, String resetLink) {
+        String subject = "Reset your Password - Movie Booking";
+        String htmlContent = "<h2>Password Reset Request</h2>" +
+            "<p>Click the button below to reset your password:</p>" +
+            "<a href='" + resetLink + "' style='background-color:#e50914;color:white;" +
+            "padding:12px 24px;text-decoration:none;border-radius:4px;'>Reset Password</a>" +
+            "<p>This link expires in 24 hours.</p>";
+        sendEmail(to, subject, htmlContent);
+    }
 }
