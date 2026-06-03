@@ -15,6 +15,9 @@ import com.moviesBooking.model.Show;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class EmailService 
 {
@@ -22,26 +25,25 @@ public class EmailService
   private JavaMailSender mailSender;
   @Autowired
   private TemplateEngine templateEngine;
+   private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+    
   @Async
-  public void sendVerificationEmail(String to,String verificationLink)
-  {
-	  try {
-	  MimeMessage message=mailSender.createMimeMessage();
-	  MimeMessageHelper helper=new MimeMessageHelper(message,true,"UTF-8");
-	  Context context=new Context();
-	  context.setVariable("verificationLink", verificationLink);
-	  String htmlContent = templateEngine.process("email/verification", context);
-	  helper.setTo(to);
-	  helper.setSubject("Verify your email-Movie Ticket Booked");
-	  helper.setText(htmlContent,true);
-	  mailSender.send(message);
-	  
-	  }
-	  catch(MessagingException e)
-	  {
-		throw new RuntimeException("Failed to Send Email",e);  
-	  }
-  }
+    public void sendVerificationEmail(String to, String verificationLink) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            Context context = new Context();
+            context.setVariable("verificationLink", verificationLink);
+            String htmlContent = templateEngine.process("email/verification", context);
+            helper.setTo(to);
+            helper.setSubject("Verify your email-Movie Ticket Booked");
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+            logger.info("✅ Email sent successfully to: {}", to);
+        } catch (Exception e) {
+            logger.error("❌ Email send failed: {}", e.getMessage()); // ← ఇది important
+        }
+    }
   public void sendBookingConfirmation(String to, Booking booking)
   {
       try {
