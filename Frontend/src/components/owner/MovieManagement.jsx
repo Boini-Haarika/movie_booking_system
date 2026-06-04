@@ -167,8 +167,12 @@ const MovieManagement = () => {
       theaterId: movie.theater?.id || selectedTheater
     });
     if (movie.posterUrl) {
-      setPosterPreview(`https://moviebookingsystem-production.up.railway.app${movie.posterUrl}`);
-    }
+  setPosterPreview(
+    movie.posterUrl.startsWith('http')
+      ? movie.posterUrl
+      : `https://moviebookingsystem-production.up.railway.app${movie.posterUrl}`
+  );
+}
     setShowModal(true);
   };
 
@@ -257,11 +261,16 @@ const MovieManagement = () => {
                   <div key={movie.id} className="movie-card">
                     <div className="movie-poster">
                       <img 
-                        src={movie.posterUrl ? `https://moviebookingsystem-production.up.railway.app${movie.posterUrl}` : '/api/placeholder/300/400'} 
-                        alt={movie.title}
-                        onError={(e) => {
-                          e.target.src = '/api/placeholder/300/400';
-                        }}
+                        src={movie.posterUrl 
+  ? movie.posterUrl.startsWith('http') 
+    ? movie.posterUrl 
+    : `https://moviebookingsystem-production.up.railway.app${movie.posterUrl}`
+  : 'https://placehold.co/300x400/1a1a2e/ffffff?text=Movie'
+}
+onError={(e) => {
+  e.target.onerror = null;
+  e.target.src = 'https://placehold.co/300x400/1a1a2e/ffffff?text=Movie';
+}}
                       />
                       <div className="movie-actions">
                         <button className="edit-btn" onClick={() => handleEdit(movie)}>Edit</button>
