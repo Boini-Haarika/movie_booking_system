@@ -57,37 +57,39 @@ public class AuthController
 	}
 	//Registering User Or Theater-Owner
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest)
-	{
-		if(userRepository.existsByEmail(signupRequest.getEmail()))
-		{
-			return ResponseEntity.badRequest().body("Email Is Already Taken!");
-		}
-		//Create User Account
-		User user=new User();
-		user.setEmail(signupRequest.getEmail());
-		user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-		user.setFullName(signupRequest.getFullName());
-		user.setPhoneNumber(signupRequest.getPhoneNumber());
-		
-		//Set Role Based On Request
-		if("THEATER_OWNER".equals(signupRequest.getRole()))
-				{
-			     user.setRole(Role.THEATER_OWNER);
-				}
-		else
-		{
-			user.setRole(Role.USER);
-		}
-		String token=TokenGenerator.generateToken();
-		user.setVerificationToken(token);
-		user.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
-		userRepository.save(user);
-		//send Verification mail
-		String verificationLink="https://moviebookingsystem-production.up.railway.app/api/auth/verify?token="+token;
-		emailService.sendVerificationEmail(user.getEmail(),verificationLink);
-		return ResponseEntity.ok("User Registerd Successfully.Please Check Your Email For Verification Link");
-	}
+public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest)
+{
+    if(userRepository.existsByEmail(signupRequest.getEmail()))
+    {
+        return ResponseEntity.badRequest().body("Email Is Already Taken!");
+    }
+    User user = new User();
+    user.setEmail(signupRequest.getEmail());
+    user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+    user.setFullName(signupRequest.getFullName());
+    user.setPhoneNumber(signupRequest.getPhoneNumber());
+
+    if("THEATER_OWNER".equals(signupRequest.getRole()))
+    {
+        user.setRole(Role.THEATER_OWNER);
+    }
+    else
+    {
+        user.setRole(Role.USER);
+    }
+
+    String token = TokenGenerator.generateToken();
+    user.setVerificationToken(token);
+    user.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
+    user.setEnabled(true); 
+    userRepository.save(user);
+
+    
+    String verificationLink = "https://movie-booking-systm.netlify.app/verify?token=" + token;
+    emailService.sendVerificationEmail(user.getEmail(), verificationLink);
+
+    return ResponseEntity.ok("User Registered Successfully. Please Check Your Email For Verification Link");
+}
 	//Verifying That User Is Real or Not Using Email
 	@GetMapping("/verify")
 	public ResponseEntity<?> verifyEmail(@RequestParam String token)
