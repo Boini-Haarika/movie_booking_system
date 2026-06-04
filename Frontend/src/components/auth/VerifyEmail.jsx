@@ -24,7 +24,12 @@ const VerifyEmail = () => {
       justifyContent: 'center', textAlign: 'center', padding: '2rem'
     }}>
       <div>
-        {status === 'verifying' && <p>Verifying your email...</p>}
+        {status === 'verifying' && (
+          <>
+            <div style={{ fontSize: '3rem' }}>⏳</div>
+            <p>Verifying your email...</p>
+          </>
+        )}
 
         {status === 'success' && (
           <>
@@ -32,7 +37,7 @@ const VerifyEmail = () => {
             <h2>Email Verified!</h2>
             <p>Your account is now active. You can log in.</p>
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/login')}  
               style={{
                 marginTop: '1rem', padding: '10px 24px',
                 background: '#e50914', color: 'white',

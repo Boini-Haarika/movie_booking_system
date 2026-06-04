@@ -92,19 +92,23 @@ public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRe
 }
 	//Verifying That User Is Real or Not Using Email
 	@GetMapping("/verify")
-	public ResponseEntity<?> verifyEmail(@RequestParam String token)
-	{
-		User user=userRepository.findByVerificationToken(token).orElseThrow(()->new RuntimeException("Invalid Verification Token!"));
-		if(user.getVerificationTokenExpiry().isBefore(LocalDateTime.now()))
-		{
-			return ResponseEntity.badRequest().body("Verification Token Has Expired");
-		}
-		user.setEnabled(true);
-		user.setVerificationToken(null);
-		user.setVerificationTokenExpiry(null);
-		userRepository.save(user);
-		return ResponseEntity.ok("Email Verified Successfully. You Can Login Now");
-	}
+public ResponseEntity<?> verifyEmail(@RequestParam String token)
+{
+    User user = userRepository.findByVerificationToken(token)
+        .orElseThrow(() -> new RuntimeException("Invalid Verification Token!"));
+    
+    // null check add చేశాం ← important fix
+    if(user.getVerificationTokenExpiry() != null && 
+       user.getVerificationTokenExpiry().isBefore(LocalDateTime.now()))
+    {
+        return ResponseEntity.badRequest().body("Verification Token Has Expired");
+    }
+    user.setEnabled(true);
+    user.setVerificationToken(null);
+    user.setVerificationTokenExpiry(null);
+    userRepository.save(user);
+    return ResponseEntity.ok("Email Verified Successfully. You Can Login Now");
+}
 
 }
 
