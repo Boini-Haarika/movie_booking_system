@@ -24,7 +24,7 @@ public class FileStorageService
                 "resource_type", "image"
             )
         );
-        // Cloudinary URL return చేస్తుంది — full URL
+       
         return uploadResult.get("secure_url").toString();
     }
 
@@ -32,11 +32,11 @@ public class FileStorageService
     {
         if (fileUrl != null && !fileUrl.isEmpty()) {
             try {
-                // URL నుండి public_id extract చేయి
+                
                 String publicId = extractPublicId(fileUrl);
                 cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
             } catch (Exception e) {
-                // delete fail అయినా ignore చేయి
+               
                 System.err.println("Failed to delete from Cloudinary: " + e.getMessage());
             }
         }
@@ -48,11 +48,11 @@ public class FileStorageService
         String[] parts = url.split("/upload/");
         if (parts.length > 1) {
             String path = parts[1];
-            // version number తీసేయి (v1234567/)
+            
             if (path.startsWith("v")) {
                 path = path.substring(path.indexOf("/") + 1);
             }
-            // extension తీసేయి
+           
             int dotIndex = path.lastIndexOf(".");
             if (dotIndex > 0) {
                 path = path.substring(0, dotIndex);

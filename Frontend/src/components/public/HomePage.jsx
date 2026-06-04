@@ -74,7 +74,7 @@ const HomePage = () => {
                 Cancel
               </button>
               <button
-                onClick={() => { setShowLoginAlert(false); navigate('/signin'); }}
+                onClick={() => { setShowLoginAlert(false); navigate('/login'); }}
                 style={{
                   padding: '10px 24px', borderRadius: '8px',
                   border: 'none', background: '#e50914',

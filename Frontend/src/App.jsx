@@ -18,6 +18,7 @@ import MovieManagement from './components/owner/MovieManagement';
 import ScreenManagement from './components/owner/ScreenManagement';
 import ShowManagement from './components/owner/ShowManagement';
 import BookingDetails from './components/user/BookingDetails';
+import VerifyEmail from './components/auth/VerifyEmail';
 
 function App() {
   const { user, loading } = useAuth();
@@ -38,6 +39,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
           <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
+          <Route path="/verify" element={<VerifyEmail />} />
           
           {/* User Routes */}
           <Route path="/user/dashboard" element={user?.role === 'USER' ? <UserDashboard /> : <Navigate to="/" />} />

@@ -25,12 +25,14 @@ const Login = () => {
       const message = err.response?.data?.message || err.response?.data || '';
 
       if (
-        status === 404 ||
-        (typeof message === 'string' &&
-          (message.toLowerCase().includes('not found') ||
-           message.toLowerCase().includes('no user') ||
-           message.toLowerCase().includes('does not exist')))
-      ) {
+  status === 404 ||
+  status === 401 ||
+  (typeof message === 'string' &&
+    (message.toLowerCase().includes('not found') ||
+     message.toLowerCase().includes('no user') ||
+     message.toLowerCase().includes('does not exist') ||
+     message.toLowerCase().includes('user not found')))
+) {
         setShowNotFoundModal(true);
       } else {
         setError(

@@ -3,6 +3,7 @@ package com.moviesBooking.security;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,11 +20,12 @@ public class CustomUserDetailsService implements UserDetailsService
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		 User user=userRepository.findByEmail(email).orElse(null);
-		 if(!user.isEnabled())
-		 {
-			 throw new UsernameNotFoundException("User Account is Not Verified");
-		 }
-		 return UserPrincipal.create(user);	
+		User user = userRepository.findByEmail(email)
+    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+if (!user.isEnabled()) {
+    throw new DisabledException("User account is not verified. Please check your email.");
+}
+return UserPrincipal.create(user);	
 	}
 }
