@@ -52,6 +52,7 @@ public class SecurityConfig
       .authorizeHttpRequests(auth -> auth
           .requestMatchers("/api/auth/**", "/oauth2/**").permitAll()
           .requestMatchers("/api/public/**").permitAll()
+          .requestMatchers("/api/auth/verify/**").permitAll()
           .requestMatchers("/api/theater-owner/**").hasRole("THEATER_OWNER")
           .requestMatchers("/api/admin/**").hasRole("ADMIN")
           .anyRequest().authenticated()
