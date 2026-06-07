@@ -36,7 +36,7 @@ const HomePage = () => {
   const getImageUrl = (posterUrl) => {
     if (!posterUrl) return 'https://placehold.co/300x400/1a1a2e/ffffff?text=Movie';
     if (posterUrl.startsWith('http')) return posterUrl; // Cloudinary URL
-    return `https://harikaboini-movie-booking-backend.hf.space${posterUrl}`; // old local URL
+    return `https://movie-booking-system-479f.onrender.com/app${posterUrl}`; // old local URL
   };
 
   return (

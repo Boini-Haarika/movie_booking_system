@@ -3,7 +3,7 @@
 A full-stack movie ticket booking platform built with React.js and Spring Boot, featuring real-time seat selection, Stripe payment integration, and role-based access control for 2 user types.
 
 **Live Demo:** https://movie-booking-systm.netlify.app  
-**Backend API:** https://harikaboini-movie-booking-backend.hf.space
+**Backend API:** https://movie-booking-system-479f.onrender.com/app
 
 ---
 
