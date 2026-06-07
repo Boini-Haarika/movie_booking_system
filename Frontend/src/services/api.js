@@ -1,7 +1,7 @@
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
-const API_BASE_URL = 'https://harikaboini-movie-booking-backend.hf.space/api'
+const API_BASE_URL = 'https://harikaboini-movie-booking-backend.hf.space/app/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
