@@ -38,6 +38,7 @@ import com.moviesBooking.repository.SeatRepository;
 import com.moviesBooking.repository.ShowRepository;
 import com.moviesBooking.repository.TheaterRepository;
 import com.moviesBooking.repository.UserRepository;
+import com.moviesBooking.services.CloudinaryService;
 import com.moviesBooking.services.FileStorageService;
 
 import tools.jackson.databind.ObjectMapper;
@@ -60,6 +61,8 @@ public class TheaterOwnerController
    private SeatRepository seatRepository;
 	@Autowired
    private UserRepository userRepository;
+   @Autowired
+    private CloudinaryService cloudinaryService;
    @Autowired
    private FileStorageService fileStorageService;
    
@@ -168,9 +171,9 @@ public class TheaterOwnerController
 
 
        if (poster != null && !poster.isEmpty()) {
-           String fileName = fileStorageService.storeFile(poster);
-           movie.setPosterUrl("/uploads/" + fileName);
-       }
+    String cloudinaryUrl = cloudinaryService.uploadImage(poster);
+    movie.setPosterUrl(cloudinaryUrl);  
+}
        Movie savedMovie = movieRepository.save(movie);
        return ResponseEntity.ok(savedMovie);
    }
@@ -234,9 +237,9 @@ public class TheaterOwnerController
 
 
        if (poster != null && !poster.isEmpty()) {
-           String fileName = fileStorageService.storeFile(poster);
-           movie.setPosterUrl("/uploads/" + fileName);
-       }
+               String cloudinaryUrl = cloudinaryService.uploadImage(poster);
+                movie.setPosterUrl(cloudinaryUrl);
+      }
 
        Movie updatedMovie = movieRepository.save(movie);
 

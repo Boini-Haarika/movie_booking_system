@@ -170,7 +170,7 @@ const MovieManagement = () => {
   setPosterPreview(
     movie.posterUrl.startsWith('http')
       ? movie.posterUrl
-      : `https://moviebookingsystem-production.up.railway.app${movie.posterUrl}`
+      : `https://harikaboini-movie-booking-backend.hf.space${movie.posterUrl}`
   );
 }
     setShowModal(true);
@@ -264,7 +264,7 @@ const MovieManagement = () => {
                         src={movie.posterUrl 
   ? movie.posterUrl.startsWith('http') 
     ? movie.posterUrl 
-    : `https://moviebookingsystem-production.up.railway.app${movie.posterUrl}`
+    : `https://harikaboini-movie-booking-backend.hf.space${movie.posterUrl}`
   : 'https://placehold.co/300x400/1a1a2e/ffffff?text=Movie'
 }
 onError={(e) => {

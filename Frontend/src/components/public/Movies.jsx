@@ -64,7 +64,16 @@ const Movies = () => {
             {movies.map((movie) => (
               <div key={movie.id} className="movie-card">
                 <div className="movie-poster">
-                  <img src={movie.posterUrl || '/placeholder-poster.jpg'} alt={movie.title} />
+                   <img
+                      src={movie.posterUrl && movie.posterUrl.startsWith('http')
+                       ? movie.posterUrl
+                       : 'https://placehold.co/300x400/1a1a2e/ffffff?text=Movie'}
+                       alt={movie.title}
+                       onError={(e) => {
+                         e.target.onerror = null;
+                         e.target.src = 'https://placehold.co/300x400/1a1a2e/ffffff?text=Movie';
+                      }}
+                    />
                   <div className="movie-overlay">
                     <Link to={`/movies/${movie.id}`} className="view-details">
                       View Details
