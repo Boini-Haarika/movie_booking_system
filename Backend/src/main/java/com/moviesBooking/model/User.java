@@ -41,7 +41,8 @@ public class User
 	private String phoneNumber;
 	private boolean isEnabled=false;
 	private String verificationToken;
-	private LocalDateTime verificationTokenExpiry;
+	@Column(columnDefinition = "DATETIME")
+    private LocalDateTime verificationTokenExpiry;
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	private String resetPasswordToken;
