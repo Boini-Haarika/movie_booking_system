@@ -390,7 +390,7 @@
             
             <!-- Download Button -->
             <div class="button-container">
-                <a th:href="'https://movie-booking-system-479f.onrender.com/app/api/user/bookings/' + ${booking?.id} + '/receipt'" 
+                <a th:href="'https://moviebookingsystem-production.up.railway.app/app/api/user/bookings/' + ${booking?.id} + '/receipt'" 
                    th:if="${booking != null and booking.id != null}"
                    class="download-button">
                     📄 Download PDF Receipt
