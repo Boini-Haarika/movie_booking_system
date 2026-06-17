@@ -36,7 +36,7 @@ const HomePage = () => {
   const getImageUrl = (posterUrl) => {
     if (!posterUrl) return 'https://placehold.co/300x400/1a1a2e/ffffff?text=Movie';
     if (posterUrl.startsWith('http')) return posterUrl; // Cloudinary URL
-    return `https://moviebookingsystem-production.up.railway.app/${posterUrl}`; // old local URL
+    return `https://moviebookingsystem-production-c1f8.up.railway.app/${posterUrl}`; 
   };
 
   return (
