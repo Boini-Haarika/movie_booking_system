@@ -85,7 +85,7 @@ public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRe
     userRepository.save(user);
 
     
-    String verificationLink = "https://movie-booking-systm.netlify.app/verify?token=" + token;
+    String verificationLink = "https://movie-booking-sysstem.netlify.app/verify?token=" + token;
     emailService.sendVerificationEmail(user.getEmail(), verificationLink);
 
     return ResponseEntity.ok("User Registered Successfully. Please Check Your Email For Verification Link");
