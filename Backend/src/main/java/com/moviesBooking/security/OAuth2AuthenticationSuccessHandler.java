@@ -23,7 +23,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     {
     	  OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
     	  String token=jwtTokenProvider.generatedToken(authentication);
-    	  String targetUrl=UriComponentsBuilder.fromUriString("https://moviebookingsystem-production.up.railway.app/app/oauth2/redirect")
+    	  String targetUrl=UriComponentsBuilder.fromUriString("https://moviebookingsystem-production-c1f8.up.railway.app/app/oauth2/redirect")
     			  .queryParam("token",token)
     			  .build().toUriString();
     	  getRedirectStrategy().sendRedirect(request, response, targetUrl);
